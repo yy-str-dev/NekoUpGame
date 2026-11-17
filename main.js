@@ -80,13 +80,22 @@ phina.define('MainScene', {
         var ground = new Bar(this, 225, 450, 1000),
             obj_list = [ground];
 
-        obj_list.push(new Bar(this, 50 + Math.random() * 400, 70 + Math.random() * 30, 100 + Math.random() * 100));
-        var x = 50 + Math.random() * 400,
-            y = 200 + Math.random() * 30;
-        obj_list.push(new Bar(this, x, y, 100 + Math.random() * 100));
-        obj_list.push(new Bar(this, 50 + Math.random() * 400, 300 + Math.random() * 30, 100 + Math.random() * 100));
+        var y = 350, i = 0;
+        while(true){
+            var x = 100 + Math.random() * 250;
 
-        obj_list.push(new ItemSmall(this, x, y - 15, score_manager));
+            obj_list.push(new Bar(this, x, y, 200));
+            if(i == 1){
+                obj_list.push(new ItemSmall(this, x, y - 15, score_manager));
+            }
+
+            if(y < 100){
+                break;
+            }
+
+            y -= 70 + Math.random() * 30;
+            i++;
+        }
 
         // obj_list.push(new Toge(this, 100, 300));
 
@@ -175,17 +184,24 @@ phina.define('MainScene', {
             if(!is_camera_move && neko.state == Neko.STATE.WAIT && neko.position_y <= 100){
                 is_camera_move = true;
                 MySoundManager.playSE("se:stage_up");
+                if(bg_ground_sprite){
+                    bg_ground_sprite.update = () => {
+                        bg_ground_sprite.position.y += camera_speed;
+                    };
+                }
             }
             if(is_camera_move){
-                if(bg_ground_sprite){
-                    bg_ground_sprite.remove();
-                    bg_ground_sprite = null;
-                }
-
                 neko.setPosition(neko.position_x, neko.position_y + camera_speed);
                 obj_list.forEach(obj => obj.setPosition(obj.position_x, obj.position_y + camera_speed));
 
                 if(neko.position_y > 400){
+                    if(bg_ground_sprite){
+                        bg_ground_sprite.remove();
+                        bg_ground_sprite = null;
+                    }
+
+                    stage_count++;
+
                     if(10 < stage_count && stage_count < 30){
                         this.backgroundColor = "#ffdbcc";
                         MySoundManager.playBGM("bgm:stage2");
@@ -199,14 +215,56 @@ phina.define('MainScene', {
                         MySoundManager.playBGM("bgm:stage4");
                     }
 
-                    var bar_width = Math.max(0, 100 - stage_count * 5);
                     is_camera_move = false;
 
                     obj_list = obj_list.filter(obj => (!obj.is_dead && obj.position_y < 460));
 
-                    obj_list.push(new Bar(this, 50 + Math.random() * 400, 70 + Math.random() * 30, 100 + Math.random() * bar_width));
-                    obj_list.push(new Bar(this, 50 + Math.random() * 400, 200 + Math.random() * 30, 100 + Math.random() * bar_width));
-                    obj_list.push(new Bar(this, 50 + Math.random() * 400, 300 + Math.random() * 30, 100 + Math.random() * bar_width));
+                    var bottom_bar_y = 300,
+                        y_span = 70,
+                        x_width = 250,
+                        min_bar_width = 200;
+                    if(stage_count <= 10){
+                        min_bar_width = 200;
+                        bottom_bar_y = 310;
+                        y_span = 70;
+                        x_width = 250;
+                    }
+                    else if(10 < stage_count && stage_count <= 30){
+                        min_bar_width = 180;
+                        bottom_bar_y = 300;
+                        y_span = 80;
+                        x_width = 250;
+                    }
+                    else if(30 < stage_count && stage_count <= 50){
+                        min_bar_width = 150;
+                        bottom_bar_y = 290;
+                        y_span = 90;
+                        x_width = 300;
+                    }
+                    else{
+                        min_bar_width = 100;
+                        bottom_bar_y = 310;
+                        y_span = 100;
+                        x_width = 350;
+                    }
+
+                    var y = bottom_bar_y;
+                    while(true){
+                        var bar_width = stage_count <= 10 ? 200 : min_bar_width - Math.random() * (stage_count - 10) * 3;
+                        var x = (450 - x_width) / 2.0 + Math.random() * x_width;
+
+                        if(y < 20){
+                            y = 20;
+                        }
+
+                        obj_list.push(new Bar(this, x, y, Math.max(50, bar_width)));
+
+                        if(y < 100){
+                            break;
+                        }
+
+                        y -= y_span + Math.random() * 30;
+                    }
 
                     var item_probability = 0.5;
 
@@ -236,22 +294,26 @@ phina.define('MainScene', {
                         // トゲなし
                     }
                     else if(10 < stage_count && stage_count <= 30){
-                        if(Math.random() <= 0.3){
-                            obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
-                        }
-                    }
-                    else if(stage_count <= 50){
                         if(Math.random() <= 0.5){
                             obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
                         }
                     }
+                    else if(stage_count <= 50){
+                        for(let i = 0; i < 2; i++){
+                            if(Math.random() <= 0.5){
+                                obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                            }
+                        }
+                    }
                     else{
                         obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+
+                        if(Math.random() <= 0.5){
+                            obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                        }
                     }
 
                     score_manager.addScore(100);
-
-                    stage_count++;
                 }
             }
             if(neko.position_x < -10 || 460 < neko.position_x || 460 < neko.position_y){
