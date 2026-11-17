@@ -48,13 +48,16 @@ phina.define('MainScene', {
         // 背景色を指定
         this.backgroundColor = '#d2eaff';
 
+        var game_group = DisplayElement().addChildTo(this),
+            ui_group = DisplayElement().addChildTo(this);
+
         var bg_ground_sprite = Sprite("bg_ground_start")
             .addChildTo(this)
             .setOrigin(0.5, 1)
             .setPosition(225, 500);
 
-        var neko = new Neko(this);
-        var score_manager = new ScoreManager(this);
+        var neko = new Neko(game_group);
+        var score_manager = new ScoreManager(ui_group);
         var arrow,
             pointer_start_x,
             pointer_start_y,
@@ -69,7 +72,7 @@ phina.define('MainScene', {
 
         for (let i = 0; i < zanki; i++) {
             var sprite = Sprite("neko_face")
-                .addChildTo(this)
+                .addChildTo(ui_group)
                 .setOrigin(1, 0)
                 .setPosition(450 - i * 72 / 2, 0)
                 .setScale(0.5, 0.5);
@@ -77,16 +80,16 @@ phina.define('MainScene', {
             zanki_sprites.push(sprite);
         }
 
-        var ground = new Bar(this, 225, 450, 1000),
+        var ground = new Bar(game_group, 225, 450, 1000),
             obj_list = [ground];
 
         var y = 350, i = 0;
         while(true){
             var x = 100 + Math.random() * 250;
 
-            obj_list.push(new Bar(this, x, y, 200));
+            obj_list.push(new Bar(game_group, x, y, 200));
             if(i == 1){
-                obj_list.push(new ItemSmall(this, x, y - 15, score_manager));
+                obj_list.push(new ItemSmall(game_group, x, y - 15, score_manager));
             }
 
             if(y < 100){
@@ -97,7 +100,7 @@ phina.define('MainScene', {
             i++;
         }
 
-        // obj_list.push(new Toge(this, 100, 300));
+        // obj_list.push(new Toge(game_group, 100, 300));
 
         var is_camera_move = false,
             camera_speed = 10,
@@ -257,7 +260,7 @@ phina.define('MainScene', {
                             y = 20;
                         }
 
-                        obj_list.push(new Bar(this, x, y, Math.max(50, bar_width)));
+                        obj_list.push(new Bar(game_group, x, y, Math.max(50, bar_width)));
 
                         if(y < 100){
                             break;
@@ -270,22 +273,22 @@ phina.define('MainScene', {
 
                     if(Math.random() <= item_probability){
                         if(stage_count <= 10){
-                            obj_list.push(new ItemSmall(this, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
+                            obj_list.push(new ItemSmall(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
                         }
                         else if(stage_count <= 30){
                             if(Math.random() <= 0.5){
-                                obj_list.push(new ItemSmall(this, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
+                                obj_list.push(new ItemSmall(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
                             }
                             else{
-                                obj_list.push(new ItemMedium(this, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
+                                obj_list.push(new ItemMedium(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
                             }
                         }
                         else{
                             if(Math.random() <= 0.5){
-                                obj_list.push(new ItemMedium(this, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
+                                obj_list.push(new ItemMedium(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
                             }
                             else{
-                                obj_list.push(new ItemBig(this, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
+                                obj_list.push(new ItemBig(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300, score_manager));
                             }
                         }
                     }
@@ -295,21 +298,21 @@ phina.define('MainScene', {
                     }
                     else if(10 < stage_count && stage_count <= 30){
                         if(Math.random() <= 0.5){
-                            obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                            obj_list.push(new Toge(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300));
                         }
                     }
                     else if(stage_count <= 50){
                         for(let i = 0; i < 2; i++){
                             if(Math.random() <= 0.5){
-                                obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                                obj_list.push(new Toge(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300));
                             }
                         }
                     }
                     else{
-                        obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                        obj_list.push(new Toge(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300));
 
                         if(Math.random() <= 0.5){
-                            obj_list.push(new Toge(this, 50 + Math.random() * 350, 50 + Math.random() * 300));
+                            obj_list.push(new Toge(game_group, 50 + Math.random() * 350, 50 + Math.random() * 300));
                         }
                     }
 
