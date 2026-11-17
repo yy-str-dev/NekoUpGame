@@ -67,6 +67,10 @@ class Neko{
                     distance_x = Math.abs(neko_center_x - obj.position_x),
                     distance_y = Math.abs(neko_center_y - obj.position_y);
 
+                if(this.state != Neko.STATE.JUMP){
+                    return;
+                }
+
                 if(obj.is_dead){
                     return;
                 }
