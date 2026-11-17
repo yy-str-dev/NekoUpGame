@@ -460,7 +460,9 @@ var click_hander = function(){
         // アプリケーション実行
         app.run();
     });
-    document.getElementById("message").remove();
+    document.getElementById("front_page").remove();
     document.removeEventListener("click", click_hander);
 };
-document.addEventListener("click", click_hander);
+window.onload = () => {
+    document.getElementById("game_launch").addEventListener("click", click_hander);
+};
