@@ -52,7 +52,7 @@ phina.define('MainScene', {
             ui_group = DisplayElement().addChildTo(this);
 
         var bg_ground_sprite = Sprite("bg_ground_start")
-            .addChildTo(this)
+            .addChildTo(game_group)
             .setOrigin(0.5, 1)
             .setPosition(225, 500);
 
@@ -63,7 +63,8 @@ phina.define('MainScene', {
             pointer_start_y,
             power,
             pointer,
-            angle;
+            angle,
+            pointer_circle;
 
         var zanki = 3,
             zanki_sprites = [],
@@ -141,6 +142,13 @@ phina.define('MainScene', {
                     .addChildTo(this)
                     .setOrigin(0.5, 0.5)
                     .setPosition(neko.position_x, neko.position_y - 10);
+                pointer_circle = CircleShape({
+                        radius: 10,
+                        fill: "transparent",
+                        stroke: "red",
+                        strokeWidth: 1
+                    }).addChildTo(this)
+                    .setPosition(neko.position_x, neko.position_y - 10);
             }
 
             var rad = Math.atan2(e.pointer.y - pointer_start_y, e.pointer.x - pointer_start_x),
@@ -152,6 +160,8 @@ phina.define('MainScene', {
             if(distance2 < 10.0 * 10.0){
                 arrow.remove();
                 arrow = null;
+                pointer_circle.remove();
+                pointer_circle = null;
                 return;
             }
 
@@ -159,7 +169,9 @@ phina.define('MainScene', {
             power = Math.max(min_power, Math.min(power, max_power));
             angle = deg + 180;
             arrow.setRotation(angle)
-                .setScale(1.0 + (power / min_power), 1.0);
+                .setScale(1.0 + ((power - min_power) / (max_power - min_power)), 1.0);
+            var pointer_circle_radius = 10 + 50 * (power - min_power) / (max_power - min_power);
+            pointer_circle.radius = pointer_circle_radius;
         };
         this.onpointend = (e) => {
             if(neko.state !== Neko.STATE.WAIT){
@@ -180,6 +192,10 @@ phina.define('MainScene', {
             if(pointer){
                 pointer.remove();
                 pointer = null;
+            }
+            if(pointer_circle){
+                pointer_circle.remove();
+                pointer_circle = null;
             }
         };
 
