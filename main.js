@@ -207,7 +207,7 @@ phina.define('MainScene', {
                         MySoundManager.playBGM("bgm:stage2");
                     }
                     else if(30 < stage_count && stage_count < 50){
-                        this.backgroundColor = "#104050";
+                        this.backgroundColor = "#326996";
                         MySoundManager.playBGM("bgm:stage3");
                     }
                     else if(50 <= stage_count){
