@@ -108,10 +108,6 @@ phina.define('MainScene', {
             stage_count = 1;
 
         this.onpointstart = (e) => {
-            if(neko.state !== Neko.STATE.WAIT){
-                return;
-            }
-
             if(is_camera_move){
                 return;
             }
@@ -134,6 +130,12 @@ phina.define('MainScene', {
             }
 
             if(is_camera_move){
+                pointer_start_x = null;
+                pointer_start_y = null;
+                return;
+            }
+
+            if(pointer_start_x == null || pointer_start_y == null){
                 return;
             }
 
@@ -174,6 +176,17 @@ phina.define('MainScene', {
             pointer_circle.radius = pointer_circle_radius;
         };
         this.onpointend = (e) => {
+            if(pointer){
+                pointer.remove();
+                pointer = null;
+            }
+            if(pointer_circle){
+                pointer_circle.remove();
+                pointer_circle = null;
+            }
+            pointer_start_x = null;
+            pointer_start_y = null;
+
             if(neko.state !== Neko.STATE.WAIT){
                 return;
             }
@@ -189,14 +202,6 @@ phina.define('MainScene', {
                 pre_position_x = neko.position_x;
                 pre_position_y = neko.position_y;
             }
-            if(pointer){
-                pointer.remove();
-                pointer = null;
-            }
-            if(pointer_circle){
-                pointer_circle.remove();
-                pointer_circle = null;
-            }
         };
 
         this.update = () => {
@@ -208,6 +213,20 @@ phina.define('MainScene', {
                         bg_ground_sprite.position.y += camera_speed;
                     };
                 }
+                if(arrow){
+                    arrow.remove();
+                    arrow = null;
+                }
+                if(pointer){
+                    pointer.remove();
+                    pointer = null;
+                }
+                if(pointer_circle){
+                    pointer_circle.remove();
+                    pointer_circle = null;
+                }
+                pointer_start_x = null;
+                pointer_start_y = null;
             }
             if(is_camera_move){
                 neko.setPosition(neko.position_x, neko.position_y + camera_speed);
