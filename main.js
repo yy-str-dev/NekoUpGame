@@ -313,7 +313,16 @@ phina.define('MainScene', {
                         }
                     }
 
-                    score_manager.addScore(100);
+                    if(stage_count <= 10){
+                        score_manager.addScore(100);
+                    }
+                    else if(stage_count <= 30){
+                        score_manager.addScore(150);
+                    }else if(stage_count <= 50){
+                        score_manager.addScore(200);
+                    }else{
+                        score_manager.addScore(300);
+                    }
                 }
             }
             if(neko.position_x < -10 || 460 < neko.position_x || 460 < neko.position_y){
