@@ -112,6 +112,10 @@ phina.define('MainScene', {
                 return;
             }
 
+            if(pointer){
+                return;
+            }
+
             pointer_start_x = e.pointer.x;
             pointer_start_y = e.pointer.y;
 
